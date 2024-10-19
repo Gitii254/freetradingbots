@@ -1,4 +1,45 @@
-<xml xmlns="http://www.w3.org/1999/xhtml" collection="false">
+<xml xmlns='https://api.denara.com'API_KEY = 'your_api_key_here'
+BASE_URL = 'https://api.denara.com'  # Replace with the actual base URL
+headers = {'Authorization': f'Bearer {API_KEY}'}
+
+# Define your target prices
+TARGET_BUY_PRICE = 100.00  # Replace with your target buy price
+TARGET_SELL_PRICE = 150.00  # Replace with your target sell price
+TRADE_QUANTITY = 1  # Number of units to trade
+
+def get_market_data(symbol):
+    response = requests.get(f'{BASE_URL}/market/{symbol}', headers=headers)
+    return response.json()
+
+def place_order(symbol, quantity, order_type):
+    order_data = {
+        'symbol': symbol,
+        'quantity': quantity,
+        'type': order_type  # 'buy' or 'sell'
+    }
+    response = requests.post(f'{BASE_URL}/order', json=order_data, headers=headers)
+    return response.json()
+
+def main(symbol):
+    while True:
+        market_data = get_market_data(symbol)
+        
+        current_price = market_data['price']  # Adjust according to actual response structure
+        
+        # Check for buy condition
+        if current_price == TARGET_BUY_PRICE:
+            print(f"Buying {TRADE_QUANTITY} of {symbol} at {current_price}")
+            place_order(symbol, TRADE_QUANTITY, 'buy')
+
+        # Check for sell condition
+        elif current_price == TARGET_SELL_PRICE:
+            print(f"Selling {TRADE_QUANTITY} of {symbol} at {current_price}")
+            place_order(symbol, TRADE_QUANTITY, 'sell')
+
+        time.sleep(60)  # Wait for a minute before checking again
+
+if __name__ == "__main__":
+    main('BTCUSD')  # Replace with the actual trading pair
   <variables>
     <variable type="" id="^ZJD*~{Z/KmB$/R$Q0bB">monto inicial</variable>
     <variable type="" id="o6G%Sde6MBsXqtNVweSn">time</variable>
